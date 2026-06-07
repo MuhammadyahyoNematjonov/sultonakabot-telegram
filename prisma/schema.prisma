@@ -1,0 +1,32 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  telegramId  String    @unique
+  fullName    String
+  phone       String
+  createdAt   DateTime  @default(now())
+  applications Application[]
+}
+
+model Application {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  section     String
+  subSection  String
+  text        String
+  status      String    @default("pending") // pending | answered
+  answer      String?
+  createdAt   DateTime  @default(now())
+  answeredAt  DateTime?
+}
